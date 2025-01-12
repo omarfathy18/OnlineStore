@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <title>Cart</title>
+</head>
+<body style="background-color:lightgrey;font-family:cursive;font-style:italic;">
+<div class="container" style="padding-top:30px;">
+   <h1 align="center" style="color:azure;font-size:32px">
+        <a href="logout/" class="btn btn-danger" style="width:80px;margin-right:270px;margin-left:70px;display:inline-block">Logout</a>
+        My Cart
+        <a href="../items/" class="btn btn-warning" style="width:100px;margin-right:50px;margin-left:270px;display:inline-block">Items</a>
+   </h1>
+    <hr style="margin-left:auto;margin-right:auto;margin-bottom:50px;width:160px;">
+    {% if messages %}
+        {% for message in messages %}
+            <div align="center" class="alert alert-danger {% if message.tags %} {{ message.tags }}{% endif %}" role="alert" style="width:350px;margin-left:auto;margin-right:auto;margin-top:-20px">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <table class="table" style="font-size:19px">
+      <thead class="thead-dark">
+        <tr align="center">
+          <th align="center" scope="col">ID</th>
+          <th align="center" scope="col" style="color:grey">Photo</th>
+          <th align="center" scope="col">Name</th>
+          <th align="center" scope="col" style="color:purple">Price</th>
+          <th align="center" scope="col" style="color:maroon">Quantity</th>
+          <th align="center" scope="col" style="color:navy">Total price</th>
+          <th align="center" scope="col" style="color:chocolate;">State</th>
+          <th align="center" scope="col" style="color:green">Done</th>
+          <th align="center" scope="col" style="color:crimson">Cancel</th>
+        </tr>
+
+      </thead>
+      <tbody>
+      {% for item in cart %}
+        <tr>
+            {% if item.p_state == 2 %}
+              <td align="center" scope="row" style="vertical-align:middle;text-decoration:line-through">{{ item.id }}</td>
+              <td align="center" style="text-decoration:line-through"><img src='{{ item.p_img }}' style="width:50px; height:50px;text-decoration:line-through"></td>
+              <td align="center" style="vertical-align:middle;text-decoration:line-through">{{ item.p_name }}</td>
+              <td align="center" style="color:purple;vertical-align:middle;text-decoration:line-through">{{ item.p_price }}$</td>
+              <td align="center" style="color:maroon;vertical-align:middle;text-decoration:line-through">{{ item.p_quantity }}</td>
+            {% else %}
+              <td align="center" scope="row" style="vertical-align:middle">{{ item.id }}</td>
+              <td align="center"><img src='{{ item.p_img }}' style="width:50px; height:50px;"></td>
+              <td align="center" style="vertical-align:middle">{{ item.p_name }}</td>
+              <td align="center" style="color:purple;vertical-align:middle">{{ item.p_price }}$</td>
+              <td align="center" style="color:maroon;vertical-align:middle">{{ item.p_quantity }}</td>
+            {% endif %}
+            {% if item.p_state == 0 %}
+                <td align="center" style="color:navy;vertical-align:middle">{{ item.p_total }}$</td>
+            {% elif item.p_state == 1 %}
+                <td align="center" style="color:navy;vertical-align:middle">Paid</td>
+            {% elif item.p_state == 2 %}
+                <td align="center" style="color:navy;vertical-align:middle">Canceled</td>
+            {% endif %}
+            {% if item.p_state == 0 %}
+                <td align="center" style="color:chocolate;vertical-align:middle">Shipping</td>
+            {% elif item.p_state == 1 %}
+                <td align="center" style="color:chocolate;vertical-align:middle">Delivered</td>
+            {% elif item.p_state == 2 %}
+                <td align="center" style="color:chocolate;vertical-align:middle">Canceled</td>
+            {% endif %}
+          <td align="center" style="vertical-align:middle"><form action="done/" method="POST">{% csrf_token %}<input type="hidden" name="id" value="{{ item.id }}"><button type="submit" class="btn btn-success">Done</button></form></td>
+          <td align="center" style="vertical-align:middle"><form action="cancel/" method="POST">{% csrf_token %}<input type="hidden" name="id" value="{{ item.id }}"><button type="submit" class="btn btn-danger">Cancel</button></form></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  <br>
+    <h5 align="center" style="color:maroon;margin-top:10px;">Total items : {{ items }}</h5>
+    <h5 align="center" style="color:navy;margin-top:20px;">Total price : {{ total }}$</h5>
+  </div>
+</body>
+</html>
